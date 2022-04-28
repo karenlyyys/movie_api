@@ -2,6 +2,60 @@ const express = require("express")
 const path = require("path")
 const app = express();
 const PORT = 8080;
+morgan = require('morgan');
+
+let movies = [
+  {
+    title: 'Inception',
+    director: 'Christopher Nolan',
+    genre: 'Sci-Fi'
+  },
+  {
+    title: 'Lord of the Rings',
+    director: 'Peter Jackson',
+    genre: 'Super-Heroes'
+  },
+  {
+    title: 'The Matrix',
+    director: 'Lana Wachowski',
+    genre: 'Sci-fi'
+  },
+  {
+      title: 'The Avengers',
+      director: 'Anthony Russo',
+      genre: 'Super-Heroes'
+    },
+    {
+      title: 'The Silence Of The Lambs',
+      director: 'Jonathan Demme',
+      genre: 'Suspense-Thriller'
+    },
+    {
+      title: 'Terminator',
+      director: 'James Cameron',
+      genre: 'Action'
+    },
+    {
+      title: 'The Prestige',
+      director: 'Christopher Nolan',
+      genre: 'Suspense-Thriller'
+    },
+    {
+      title: 'Shutter Island',
+      director: 'Martin Scorsese',
+      genre:'Suspense-Thriller'
+    },
+    {
+      title: 'The Fugitive',
+      director: 'Andrew Davis',
+      genre: 'Suspense-Thriller'
+    },
+    {
+      title: 'The Shack',
+      director: 'Stuart Hazeldine',
+      genre: 'Feel-Good'
+    }
+];
 
 //Using the Morgan middleware library to log all requests
 app.use(morgan('common'));
@@ -34,59 +88,8 @@ app.use((err, req, res, next) => {
     res.status(500).send('Oops!Something Went Wrong!');
   });
 
-  let movies = [
-    {
-      title: 'Inception',
-      director: 'Christopher Nolan',
-      genre: 'Sci-Fi'
-    },
-    {
-      title: 'Lord of the Rings',
-      director: 'Peter Jackson',
-      genre: 'Super-Heroes'
-    },
-    {
-      title: 'The Matrix',
-      director: 'Lana Wachowski',
-      genre: 'Sci-fi'
-    },
-    {
-        title: 'The Avengers',
-        director: 'Anthony Russo',
-        genre: 'Super-Heroes'
-      },
-      {
-        title: 'The Silence Of The Lambs',
-        director: 'Jonathan Demme',
-        genre: 'Suspense-Thriller'
-      },
-      {
-        title: 'Terminator',
-        director: 'James Cameron',
-        genre: 'Action'
-      },
-      {
-        title: 'The Prestige',
-        director: 'Christopher Nolan',
-        genre: 'Suspense-Thriller'
-      },
-      {
-        title: 'Shutter Island',
-        director: 'Martin Scorsese',
-        genre:'Suspense-Thriller'
-      },
-      {
-        title: 'The Fugitive',
-        director: 'Andrew Davis',
-        genre: 'Suspense-Thriller'
-      },
-      {
-        title: 'The Shack',
-        director: 'Stuart Hazeldine',
-        genre: 'Feel-Good'
-      }
-  ];
-
 //Listen for request
-app.listen(PORT, ()=>console.log("App is running"))
+app.listen(PORT, ()=>console.log("App is running"));
+
+
 
