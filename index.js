@@ -1,8 +1,8 @@
 const express = require("express")
+      morgan = require('morgan');
 const path = require("path")
 const app = express();
-const PORT = 8080;
-morgan = require('morgan');
+const PORT = 8080
 
 let movies = [
   {
