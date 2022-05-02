@@ -3,7 +3,7 @@ const res = require("express/lib/response");
       morgan = require('morgan');
 const path = require("path")
 const app = express();
-const PORT = 8080
+const PORT = 8080; 
 const uuid = require('uuid');
 const bodyParser = require('body-parser');
 
@@ -65,7 +65,7 @@ let movies = [
 // READ to return all movies to user
 app.get('/movies', (req, res) => {
   res.status(200).json(movies)
-}
+});
 
 //For returning data about a single movie
 app.get('/movies/title/:title', (req, res) => {
@@ -123,10 +123,7 @@ app.delete('/users/deregister/:id', (req, res) => {
   res.send('User details successfully removed!')
 });
 
-//Using the Morgan middleware library to log all requests
-app.use(morgan('common'));
-app.use(express.json()); 
-
+//GET request for returning the personal message
 app.get("/", (req, res)=>{
     res.send("welcome to my flix")
 })
@@ -144,6 +141,10 @@ app.get('/movies', (req, res) => {
 app.get('/', (req, res) => {
     res.send('Welcome to the Top 10 Movies List!');
   });
+
+  //Using the Morgan middleware library to log all requests
+app.use(morgan('common'));
+app.use(express.json()); 
 
 //Using express.static to serve the documentation.html file
 app.use(express.static('public'));
