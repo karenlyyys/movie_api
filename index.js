@@ -1,8 +1,13 @@
-const express = require("express")
+const express = require("express");
+const res = require("express/lib/response");
       morgan = require('morgan');
 const path = require("path")
 const app = express();
 const PORT = 8080
+const uuid = require('uuid');
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
 
 let movies = [
   {
@@ -56,6 +61,67 @@ let movies = [
       genre: 'Feel-Good'
     }
 ];
+
+// READ to return all movies to user
+app.get('/movies', (req, res) => {
+  res.status(200).json(movies)
+}
+
+//For returning data about a single movie
+app.get('/movies/title/:title', (req, res) => {
+  const movie = movies.find((m)=> m.title == req.params.title);
+  res.send(movie);
+});
+
+//For returning data about a genre
+app.get('/movies/genre/:genre', (req, res) => {
+  const movies_ = movies.filter((m)=> m.genre == req.params.genre);
+  res.send(movies_);
+});
+
+//For returning data about a director by name
+app.get('/movies/director/:director', (req, res) => {
+  const director = movies.filter((m)=> m.director == req.params.director);
+  res.send(director);
+});
+
+//CREATE For allowing new users to register
+app.post('/users/register', (req, res) => {
+  users.push(req.body);
+  res.send('Registeration Successful!');
+});
+app.get('/users', (req, res) => {
+  res.send(users);
+});
+
+//For allowing users to UPDATE their user info
+app.put('/users/update/:id', (req, res) => {
+  let userId =  users.findIndex((u)=>u.id==req.params.id);
+  users.slice(userId,1, {...req.body});
+  res.send('Changes saved successfully!');
+  res.send(users);
+});
+
+//For allowing users to add a movie to their list of favorite movies
+app.post('/favourite/add/:id', (req, res) => {
+  const user = users.find((u) => u.id ==req.params.id);
+  user.favMovies.push(req.body);
+  res.send(user);
+});
+
+//For allowing users to remove a movie from their list of favorites movies-text
+app.delete('/favourite/delete/:id/:title', (req, res) => {
+  const user = users.find((u) => u.id ==req.params.id);
+  const favs = user.favMovies.filter((m)=>m.title != req.params.title)
+  user.favMovies = [...favs];
+  res.send(user);
+});
+
+//For allowing existing users to deregister-text
+app.delete('/users/deregister/:id', (req, res) => {
+  users.filter((m) => m.id !=req.params.id);
+  res.send('User details successfully removed!')
+});
 
 //Using the Morgan middleware library to log all requests
 app.use(morgan('common'));
