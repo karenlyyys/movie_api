@@ -9,6 +9,30 @@ const bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
 
+let users = [
+  {
+    id:1,
+    fullname: 'John Doe',
+    email: 'johndoe@mail.com',
+    favMovies: [{
+      title: 'Inception',
+      director: 'Christopher Nolan',
+      genre: 'Sci-Fi'
+    }]
+  },
+  {
+    id:2,
+    fullname: 'Jane Doe',
+    email: 'janedoe@mail.com',
+    favMovies: [{
+      title: 'The Avengers',
+      director: 'Peter Jackson',
+      genre: 'Super-Heroes'
+    }]
+  }
+
+];
+
 let movies = [
   {
     title: 'Inception',
@@ -88,7 +112,7 @@ app.get('/movies/director/:director', (req, res) => {
 //CREATE For allowing new users to register
 app.post('/users/register', (req, res) => {
   users.push(req.body);
-  res.send('Registeration Successful!');
+  res.send('Registration Successful!');
 });
 app.get('/users', (req, res) => {
   res.send(users);
