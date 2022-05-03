@@ -94,19 +94,19 @@ app.get('/movies', (req, res) => {
 //For returning data about a single movie
 app.get('/movies/title/:title', (req, res) => {
   const movie = movies.find((m)=> m.title == req.params.title);
-  res.send(movie);
+  res.send('Request was successful');
 });
 
 //For returning data about a genre
 app.get('/movies/genre/:genre', (req, res) => {
   const movies_ = movies.filter((m)=> m.genre == req.params.genre);
-  res.send(movies_);
+  res.send('Request was successful');
 });
 
 //For returning data about a director by name
 app.get('/movies/director/:director', (req, res) => {
   const director = movies.filter((m)=> m.director == req.params.director);
-  res.send(director);
+  res.send('Request was successful');
 });
 
 //CREATE For allowing new users to register
@@ -130,7 +130,7 @@ app.put('/users/update/:id', (req, res) => {
 app.post('/favourite/add/:id', (req, res) => {
   const user = users.find((u) => u.id ==req.params.id);
   user.favMovies.push(req.body);
-  res.send(user);
+  res.send('Request was successful')
 });
 
 //For allowing users to remove a movie from their list of favorites movies-text
@@ -138,7 +138,7 @@ app.delete('/favourite/delete/:id/:title', (req, res) => {
   const user = users.find((u) => u.id ==req.params.id);
   const favs = user.favMovies.filter((m)=>m.title != req.params.title)
   user.favMovies = [...favs];
-  res.send(user);
+  res.send('Favorite has been removed')
 });
 
 //For allowing existing users to deregister-text
