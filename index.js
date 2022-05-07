@@ -29,7 +29,17 @@ let users = [
       director: 'Peter Jackson',
       genre: 'Super-Heroes'
     }]
-  }
+  },
+  {
+  id:3,
+  fullname: 'Iris Lopez',
+  email: 'irislopez@gmail.com',
+  favMovies: [{
+    title: 'Terminator',
+    director: 'James Cameron',
+    genre: 'Action'
+  }]
+}
 
 ];
 
