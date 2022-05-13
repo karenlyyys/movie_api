@@ -6,117 +6,37 @@ const app = express();
 const PORT = 8080; 
 const uuid = require('uuid');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+
+const Movies = Models.Movie;
+const Users = Models.User;
+
+const passport = require("passport")
+
+mongoose.connect('mongodb+srv://karenlyyys:Popmusic2@cluster0.geg4q.mongodb.net/moviesdb', { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(bodyParser.json());
 
-let users = [
-  {
-    id:1,
-    fullname: 'John Doe',
-    email: 'johndoe@mail.com',
-    favMovies: [{
-      title: 'Inception',
-      director: 'Christopher Nolan',
-      genre: 'Sci-Fi'
-    }]
-  },
-  {
-    id:2,
-    fullname: 'Jane Doe',
-    email: 'janedoe@mail.com',
-    favMovies: [{
-      title: 'The Avengers',
-      director: 'Peter Jackson',
-      genre: 'Super-Heroes'
-    }]
-  },
-  {
-  id:3,
-  fullname: 'Iris Lopez',
-  email: 'irislopez@gmail.com',
-  favMovies: [{
-    title: 'Terminator',
-    director: 'James Cameron',
-    genre: 'Action'
-  }]
-}
-
-];
-
-let movies = [
-  {
-    title: 'Inception',
-    director: 'Christopher Nolan',
-    genre: 'Sci-Fi'
-  },
-  {
-    title: 'Lord of the Rings',
-    director: 'Peter Jackson',
-    genre: 'Super-Heroes'
-  },
-  {
-    title: 'The Matrix',
-    director: 'Lana Wachowski',
-    genre: 'Sci-fi'
-  },
-  {
-      title: 'The Avengers',
-      director: 'Anthony Russo',
-      genre: 'Super-Heroes'
-    },
-    {
-      title: 'The Silence Of The Lambs',
-      director: 'Jonathan Demme',
-      genre: 'Suspense-Thriller'
-    },
-    {
-      title: 'Terminator',
-      director: 'James Cameron',
-      genre: 'Action'
-    },
-    {
-      title: 'The Prestige',
-      director: 'Christopher Nolan',
-      genre: 'Suspense-Thriller'
-    },
-    {
-      title: 'Shutter Island',
-      director: 'Martin Scorsese',
-      genre:'Suspense-Thriller'
-    },
-    {
-      title: 'The Fugitive',
-      director: 'Andrew Davis',
-      genre: 'Suspense-Thriller'
-    },
-    {
-      title: 'The Shack',
-      director: 'Stuart Hazeldine',
-      genre: 'Feel-Good'
-    }
-];
 
 // READ to return all movies to user
 app.get('/movies', (req, res) => {
-  res.status(200).json(movies)
+  Movies.find().then(movies => res.status(200).json(movies));
 });
 
 //For returning data about a single movie
 app.get('/movies/title/:title', (req, res) => {
-  const movie = movies.find((m)=> m.title == req.params.title);
-  res.send('Request was successful');
+  Movies.findOne({Title: req.params.title}).then(movie => res.status(200).json(movie));
 });
 
 //For returning data about a genre
 app.get('/movies/genre/:genre', (req, res) => {
-  const movies_ = movies.filter((m)=> m.genre == req.params.genre);
-  res.send('Request was successful');
+  Movies.findOne({"Genre.Name": req.params.genre}).then(movie => res.status(200).json(movie.Genre));
 });
 
 //For returning data about a director by name
 app.get('/movies/director/:director', (req, res) => {
-  const director = movies.filter((m)=> m.director == req.params.director);
-  res.send('Request was successful');
+  Movies.findOne({"Director.Name": req.params.director}).then(movie => res.status(200).json(movie.Director));
 });
 
 //CREATE For allowing new users to register
@@ -129,32 +49,74 @@ app.get('/users', (req, res) => {
 });
 
 //For allowing users to UPDATE their user info
-app.put('/users/update/:id', (req, res) => {
-  let userId =  users.findIndex((u)=>u.id==req.params.id);
-  users.slice(userId,1, {...req.body});
-  res.send('Changes saved successfully!');
-  res.send(users);
+// Update a user's info, by username
+app.put('/users/:Username', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
+    {
+      Username: req.body.Username,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
+    }
+  },
+  { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if(err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
 //For allowing users to add a movie to their list of favorite movies
-app.post('/favourite/add/:id', (req, res) => {
-  const user = users.find((u) => u.id ==req.params.id);
-  user.favMovies.push(req.body);
-  res.send('Request was successful')
+// Add a movie to a user's list of favorites
+app.post('/users/:Username/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $push: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
 //For allowing users to remove a movie from their list of favorites movies-text
-app.delete('/favourite/delete/:id/:title', (req, res) => {
-  const user = users.find((u) => u.id ==req.params.id);
-  const favs = user.favMovies.filter((m)=>m.title != req.params.title)
-  user.favMovies = [...favs];
-  res.send('Favorite has been removed')
+app.delete('/users/:Username/movies/:MovieID', passport.authenticate ('jwt', { session: false }), 
+(req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, 
+      { $pull: { FavoriteMovies: req.params.MovieID }},
+      { new: true },
+     (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      } else {
+        res.status(200).json(updatedUser);
+      }
+  });
 });
 
-//For allowing existing users to deregister-text
-app.delete('/users/deregister/:id', (req, res) => {
-  users.filter((m) => m.id !=req.params.id);
-  res.send('User details successfully removed!')
+// Delete a user by username
+app.delete('/users/:Username', (req, res) => {
+  Users.findOneAndRemove({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 //GET request for returning the personal message
