@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 
 // READ to return all movies to user
 app.get('/movies', (req, res) => {
-  Movies.find().then(movies => res.status(200).json(movies));
+  Movies.findOne({"Movies.Name": req.params.movies}).then(movie => res.status(200).json(movie.movies));
 });
 
 //For returning data about a single movie
@@ -41,11 +41,18 @@ app.get('/movies/director/:director', (req, res) => {
 
 //CREATE For allowing new users to register
 app.post('/users/register', (req, res) => {
-  users.push(req.body);
-  res.send('Registration Successful!');
-});
-app.get('/users', (req, res) => {
-  res.send(users);
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $push: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
 //For allowing users to UPDATE their user info
@@ -88,7 +95,7 @@ app.post('/users/:Username/movies/:MovieID', (req, res) => {
 });
 
 //For allowing users to remove a movie from their list of favorites movies-text
-app.delete('/users/:Username/movies/:MovieID', passport.authenticate ('jwt', { session: false }), 
+app.delete('/users/:Username/favorites/:MovieID', passport.authenticate ('jwt', { session: false }), 
 (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, 
       { $pull: { FavoriteMovies: req.params.MovieID }},
