@@ -12,30 +12,33 @@ const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 
-const passport = require("passport")
-
 mongoose.connect('mongodb+srv://karenlyyys:Popmusic2@cluster0.geg4q.mongodb.net/moviesdb', { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(bodyParser.json());
 
+app.use(bodyParser.urlencoded({ extended: true }));
+
+let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
 
 // READ to return all movies to user
-app.get('/movies', (req, res) => {
-  Movies.findOne({"Movies.Name": req.params.movies}).then(movie => res.status(200).json(movie.movies));
+app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Movies.findOne().then(movies => res.status(200).json(movies));
 });
 
 //For returning data about a single movie
-app.get('/movies/title/:title', (req, res) => {
+app.get('/movies/title/:title', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({Title: req.params.title}).then(movie => res.status(200).json(movie));
 });
 
 //For returning data about a genre
-app.get('/movies/genre/:genre', (req, res) => {
+app.get('/movies/genre/:genre', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({"Genre.Name": req.params.genre}).then(movie => res.status(200).json(movie.Genre));
 });
 
 //For returning data about a director by name
-app.get('/movies/director/:director', (req, res) => {
+app.get('/movies/director/:director', passport.authenticate('jwt', { session: false }),  (req, res) => {
   Movies.findOne({"Director.Name": req.params.director}).then(movie => res.status(200).json(movie.Director));
 });
 
@@ -77,8 +80,7 @@ app.put('/users/:Username', (req, res) => {
   });
 });
 
-//For allowing users to add a movie to their list of favorite movies
-// Add a movie to a user's list of favorites
+//For users to log in
 app.post('/users/:Username/movies/:MovieID', (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
      $push: { FavoriteMovies: req.params.MovieID }
