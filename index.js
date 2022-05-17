@@ -22,6 +22,24 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
+//Using express.static to serve the documentation.html file
+app.use(express.static('public'));
+
+//GET request for returning the personal message
+app.get("/", (req, res)=>{
+  res.send("welcome to my flix")
+})
+
+app.get("/documentation", (req, res)=>{
+  res.sendFile(path.join(__dirname,'/public/documentation.html'));
+})
+
+//Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Oops!Something Went Wrong!');
+});
+
 // READ to return all movies to user
 app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne().then(movies => res.status(200).json(movies));
@@ -57,10 +75,10 @@ app.post('/users/register', (req, res) => {
     }
   });
 });
-
+//test from here
 //For allowing users to UPDATE their user info
 // Update a user's info, by username
-app.put('/users/:Username', (req, res) => {
+app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
     {
       Username: req.body.Username,
@@ -80,8 +98,8 @@ app.put('/users/:Username', (req, res) => {
   });
 });
 
-//For users to log in
-app.post('/users/:Username/movies/:MovieID', (req, res) => {
+//For users to add movies to favorites list
+app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
      $push: { FavoriteMovies: req.params.MovieID }
    },
@@ -113,7 +131,7 @@ app.delete('/users/:Username/favorites/:MovieID', passport.authenticate ('jwt', 
 });
 
 // Delete a user by username
-app.delete('/users/:Username', (req, res) => {
+app.delete('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndRemove({ Username: req.params.Username })
     .then((user) => {
       if (!user) {
@@ -127,38 +145,6 @@ app.delete('/users/:Username', (req, res) => {
       res.status(500).send('Error: ' + err);
     });
 });
-
-//GET request for returning the personal message
-app.get("/", (req, res)=>{
-    res.send("welcome to my flix")
-})
-
-app.get("/documentation", (req, res)=>{
-    res.sendFile(path.join(__dirname,'/public/documentation.html'));
-})
-
-//GET request for returning the JSON movie data
-app.get('/movies', (req, res) => {
-    res.json(movies);
-});
-
-//GET request for returning default response
-app.get('/', (req, res) => {
-    res.send('Welcome to the Top 10 Movies List!');
-  });
-
-  //Using the Morgan middleware library to log all requests
-app.use(morgan('common'));
-app.use(express.json()); 
-
-//Using express.static to serve the documentation.html file
-app.use(express.static('public'));
-
-//Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Oops!Something Went Wrong!');
-  });
 
 //Listen for request
 app.listen(PORT, ()=>console.log("App is running"));
