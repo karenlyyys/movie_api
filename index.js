@@ -44,7 +44,7 @@ app.use((err, req, res, next) => {
 
 // READ to return all movies to user
 app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Movies.findOne().then(movies => res.status(200).json(movies));
+  Movies.find().then(movies => res.status(200).json(movies));
 });
 
 //For returning data about a single movie
