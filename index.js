@@ -1,8 +1,10 @@
 const express = require("express");
+var cors = require('cors')
 const res = require("express/lib/response");
       morgan = require('morgan');
 const path = require("path")
 const app = express();
+app.use(cors())
 const PORT = process.env.PORT || 8080; 
 const uuid = require('uuid');
 const bodyParser = require('body-parser');
