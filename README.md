@@ -1,5 +1,7 @@
 # movie_api
 
+MYFlix App
+
 Movie API
 
 Description: This is a backend API to store information about movies and allow users to make their list of favorite movies. 
