@@ -19,12 +19,20 @@ passport
 passport-jwt
 
 passport-local
+
 body-parser
+
 mongoose
+
 cors
+
 bcrypt
+
 morgan
+
 lodash
+
 Executing program
+
 Documentation
 For a list of endpoints and responses check out the documentation.html
