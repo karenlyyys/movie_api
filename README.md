@@ -2,9 +2,7 @@
 
 Movie API
 
-Description:
-
-This is a backend API to store information about movies and allow users to make their list of favorite movies. 
+Description: This is a backend API to store information about movies and allow users to make their list of favorite movies. 
 
 Dependencies
 
