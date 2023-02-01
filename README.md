@@ -2,9 +2,9 @@ The server-side component of a “movies” web application. The web application
 
 Key features:
 
-+Return a list of ALL movies to the user
++ Return a list of ALL movies to the user
 
-+Return data (description, genre, director, image URL, whether it’s featured or not) about a single movie by title to the user
++ Return data (description, genre, director, image URL, whether it’s featured or not) about a single movie by title to the user
 
   Return data about a genre (description) by name/title (e.g., “Thriller”)
 
