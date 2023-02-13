@@ -25,3 +25,7 @@ The server-side component of a “movies” web application. The web application
 ### Technologies used: 
 
 JavaScript, Node.js, Express, MongoDB, Mongoose
+
+How to Run:
+
+Locally
