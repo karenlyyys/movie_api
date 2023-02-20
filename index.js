@@ -14,7 +14,7 @@ const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 
-mongoose.connect('mongodb+srv://karenlyyys:Popmusic2@cluster0.geg4q.mongodb.net/moviesdb', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://karenlyyys:IloveSeattle@cluster0.geg4q.mongodb.net/moviesdb', { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(bodyParser.json());
 
