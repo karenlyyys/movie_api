@@ -1,38 +1,31 @@
-# movie_api
+## Objective
 
-MYFlix App
+The server-side component of a “movies” web application. The web application will provide users with access to information about different movies, directors, and genres. Users will be able to sign up, update their personal information, and create a list of their favorite movies.
 
-Movie API
+### Key features:
 
-Description: This is a backend API to store information about movies and allow users to make their list of favorite movies. 
++ Return a list of ALL movies to the user
 
-Dependencies
++ Return data (description, genre, director, image URL, whether it’s featured or not) about a single movie by title to the user
 
-Node.JS
++ Return data about a genre (description) by name/title (e.g., “Thriller”)
 
-express
++ Return data about a director (bio, birth year, death year) by name
 
-express-validator
++ Allow new users to register
 
-passport
++ Allow users to update their user info (username, password, email, date of birth)
 
-passport-jwt
++ Allow users to add a movie to their list of favorites
 
-passport-local
++ Allow users to remove a movie from their list of favorites
 
-body-parser
++ Allow existing users to deregister
 
-mongoose
+### Technologies used: 
 
-cors
+JavaScript, Node.js, Express, MongoDB, Mongoose
 
-bcrypt
+How to Run:
 
-morgan
-
-lodash
-
-Executing program
-
-Documentation
-For a list of endpoints and responses check out the documentation.html
+Locally
